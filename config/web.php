@@ -11,7 +11,8 @@ $config = [
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ],
-            'csrfParam' => '_csrf-backend',
+            'enableCookieValidation' => false,
+//            'csrfParam' => '_csrf-backend',
             'cookieValidationKey' => 'iU1_GSfIhjcuSLZjladeokeqtiP82yc1',
         ],
         'session' => [
@@ -23,7 +24,9 @@ $config = [
         ],
         'user' => [
             'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
+            'enableSession' => false,
+            'loginUrl' => null,
+//            'enableAutoLogin' => true,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',

@@ -5,6 +5,11 @@ namespace app\controllers;
 use yii\helpers\ArrayHelper;
 use yii\rest\ActiveController;
 use yii\data\ActiveDataProvider;
+use yii\filters\ContentNegotiator;
+use yii\filters\auth\HttpBearerAuth;
+use yii\web\Response;
+use yii\filters\AccessControl;
+use yii\filters\Cors;
 
 class UserController extends ActiveController {
 
@@ -12,11 +17,32 @@ class UserController extends ActiveController {
     public $expand = ['profile', 'type', 'state'];
 
     public function behaviors() {
-        return ArrayHelper::merge(parent::behaviors(), [
-                    'corsFilter' => [
-                        'class' => \yii\filters\Cors::className(),
-                    ],
-        ]);
+        $behaviors = parent::behaviors();
+//        $behaviors['authenticator'] = [
+//            'class' => HttpBearerAuth::className(),
+//            'only' => ['*'],
+//        ];
+//        $behaviors['contentNegotiator'] = [
+//            'class' => ContentNegotiator::className(),
+//            'formats' => [
+//                'application/json' => Response::FORMAT_JSON,
+//            ],
+//        ];
+        $behaviors['access'] = [
+            'class' => AccessControl::className(),
+//            'only' => ['*'],
+            'rules' => [
+                [
+//                    'actions' => ['*'],
+                    'allow' => true,
+//                    'roles' => ['@'],
+                ],
+            ],
+        ];
+        $behaviors['corsFilter'] = [
+            'class' => Cors::className(),
+        ];
+        return $behaviors;
     }
 
     public function actionSearch() {
@@ -29,7 +55,7 @@ class UserController extends ActiveController {
             }
             try {
                 $provider = new ActiveDataProvider([
-                    'query' => $model->find()->where($_GET)->with($this->expand)->asArray(),
+                    'query' => $model->find()->where($_GET)->with($this->expand)->with($this->expand)->asArray(),
                     'pagination' => false
                 ]);
             } catch (Exception $ex) {
