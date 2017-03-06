@@ -22,12 +22,12 @@ class PropertyController extends ActiveController {
 //            'class' => HttpBearerAuth::className(),
 //            'only' => ['*'],
 //        ];
-        $behaviors['contentNegotiator'] = [
-            'class' => ContentNegotiator::className(),
-            'formats' => [
-                'application/json' => Response::FORMAT_JSON,
-            ],
-        ];
+//        $behaviors['contentNegotiator'] = [
+//            'class' => ContentNegotiator::className(),
+//            'formats' => [
+//                'application/json' => Response::FORMAT_JSON,
+//            ],
+//        ];
         $behaviors['access'] = [
             'class' => AccessControl::className(),
 //            'only' => ['*'],
