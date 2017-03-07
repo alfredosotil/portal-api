@@ -11,6 +11,8 @@ use yii\filters\AccessControl;
 use yii\rest\Controller;
 use yii\filters\auth\HttpBearerAuth;
 use app\assets\AppAsset;
+use yii\filters\Cors;
+use yii\data\ActiveDataProvider;
 
 class ApiController extends Controller {
 
@@ -19,28 +21,50 @@ class ApiController extends Controller {
      */
     public function behaviors() {
         $behaviors = parent::behaviors();
-        $behaviors['authenticator'] = [
-            'class' => HttpBearerAuth::className(),
-            'only' => ['dashboard', 'menudashboard'],
-        ];
-        $behaviors['contentNegotiator'] = [
-            'class' => ContentNegotiator::className(),
-            'formats' => [
-                'application/json' => Response::FORMAT_JSON,
-            ],
-        ];
+//        $behaviors['authenticator'] = [
+//            'class' => HttpBearerAuth::className(),
+//            'only' => ['dashboard', 'menudashboard'],
+//        ];
+//        $behaviors['contentNegotiator'] = [
+//            'class' => ContentNegotiator::className(),
+//            'formats' => [
+//                'application/json' => Response::FORMAT_JSON,
+//            ],
+//        ];
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'only' => ['dashboard', 'menudashboard'],
+//            'only' => ['dashboard', 'menudashboard'],
             'rules' => [
                 [
-                    'actions' => ['dashboard', 'menudashboard'],
+//                    'actions' => ['dashboard', 'menudashboard'],
                     'allow' => true,
-                    'roles' => ['@'],
+//                    'roles' => ['@'],
                 ],
             ],
         ];
+        $behaviors['corsFilter'] = [
+            'class' => Cors::className(),
+        ];
         return $behaviors;
+    }
+    
+    public function actionIndex(){
+        return ['item' => 1];
+    }
+
+    public function actionGetmainslider() {
+        try {
+            $properties = \app\models\Property::getPropertyByPriority(5, 10); //limit 20
+            
+        } catch (Exception $ex) {
+            throw new \yii\web\HttpException(500, 'Internal server error');
+        }
+
+        if (count($properties) <= 0) {
+            throw new \yii\web\HttpException(404, 'No entries found with this query string');
+        } else {
+            return $properties;
+        }
     }
 
     public function actionLogin() {
@@ -71,8 +95,8 @@ class ApiController extends Controller {
         ];
         return $response;
     }
-    
-    public function actionMenudashboard(){
+
+    public function actionMenudashboard() {
         $response = [
             'menu' => AppAsset::menuDashboard(),
         ];

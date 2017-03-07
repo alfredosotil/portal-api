@@ -55,7 +55,7 @@ class PropertyController extends ActiveController {
             }
             try {
                 $provider = new ActiveDataProvider([
-                    'query' => $model->find()->where($_GET)->with($this->expand)->with($this->expand)->asArray(),
+                    'query' => $model->find()->where($_GET)->with($this->expand)->asArray(),
                     'pagination' => false
                 ]);
             } catch (Exception $ex) {

@@ -185,7 +185,7 @@ class Property extends \yii\db\ActiveRecord {
     }
 
     public static function getPropertyByPriority($priority, $limit) {
-        return Property::find()->where(['priority' => $priority])->andWhere(['active' => 1])->limit($limit)->all();
+        return Property::find()->where(['priority' => $priority])->andWhere(['active' => 1])->with(['agent', 'type', 'state', 'imagesProperties'])->asArray()->limit($limit)->all();
     }
 
     public static function getPropertiesRecentlyAdded($daysold, $limit) {
